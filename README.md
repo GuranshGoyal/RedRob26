@@ -302,6 +302,8 @@ This folder (`pipeline/`) is self-contained and contains everything needed to ru
 - `output/` — generated submission (`submission.csv`).
 - `../organizer/` — challenge bundle provided by the organizers.
 
+> **Note on the candidate dataset:** The full candidate pool (`candidates.jsonl`, ~487 MB) is too large to upload to this repository. It must be provided by the organizers/evaluators during reproduction. Place it in `pipeline/data/` before running the pipeline.
+
 ## Setup
 
 ```bash
@@ -311,22 +313,27 @@ cd RedRob26
 
 # 2. Install Git LFS and pull the .npz embedding cache
 #    (Git LFS is required because the embedding cache exceeds GitHub's 100 MB limit.)
+#    On macOS, install Git LFS first if it is not available: brew install git-lfs
 git lfs install
 git lfs pull
 
 # 3. Create a virtual environment (recommended)
 python -m venv venv
 
-# Activate (Windows Git Bash / PowerShell)
+# Activate on Windows Git Bash / PowerShell
 source venv/Scripts/activate
 
-# Activate (Linux/macOS)
+# Activate on Linux/macOS
 source venv/bin/activate
 
 # 4. Install dependencies
 pip install -r requirements.txt
 
-# 5. Ensure the full-pool BGE embedding cache is present
+# 5. Place the candidate dataset
+#    The full candidate pool (candidates.jsonl, ~487 MB) is provided by the organizers.
+#    It must be placed in pipeline/data/ before running the pipeline.
+
+# 6. Ensure the full-pool BGE embedding cache is present
 #    The cache is stored in Git LFS. If it is missing, get_embeddings.py can
 #    download it from HuggingFace (~1–2 minutes) or generate it locally (~300 minutes).
 cd pipeline
