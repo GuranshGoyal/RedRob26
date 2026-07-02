@@ -59,7 +59,10 @@ def run_pipeline(candidates_path="candidates.jsonl", output_path="submission.csv
     CE_TOPK             = 400               # only the top-CE_TOPK shortlist rows are re-ranked
 
     # --- Offline dense index (embeddings precomputed & cached -> full-contender retrieval) ---
-    EMB_CACHE_PATH = "cache/bge_embeddings_completed.npz"    # persisted BGE vectors (candidate_id + text-hash keyed)
+    # Resolve cache path relative to this script so it works whether rank.py is run
+    # from pipeline/ or imported from sandbox/app.py (where cwd is the repo root).
+    _pipeline_dir = os.path.dirname(os.path.abspath(__file__))
+    EMB_CACHE_PATH = os.path.join(_pipeline_dir, "cache", "bge_embeddings_completed.npz")
     USE_FAISS      = True                     # FAISS IndexFlatIP retrieval; falls back to numpy dot
 
     # Adaptive-shortlist controls (the SIZE itself is computed in Stage 2D, not fixed here).
@@ -69,10 +72,26 @@ def run_pipeline(candidates_path="candidates.jsonl", output_path="submission.csv
 
     # ------------------- VERIFY PRE-COMPUTED EMBEDDING CACHE ------------------
     if USE_DENSE_EMBEDDINGS and not os.path.exists(EMB_CACHE_PATH):
-        raise FileNotFoundError(
-            f"Embedding cache not found at {EMB_CACHE_PATH}. "
-            "Run the precomputation step first: python get_embeddings.py"
-        )
+        _ge_path = os.path.join(_pipeline_dir, "get_embeddings.py")
+        if os.path.exists(_ge_path):
+            print("\n" + "=" * 72)
+            print("WARNING: Pre-computed embedding cache not found.")
+            print(f"  Expected: {EMB_CACHE_PATH}")
+            print("  You did NOT run the precomputation step first:")
+            print("      python get_embeddings.py")
+            print("  The pipeline will now obtain the cache automatically.")
+            print("  This will SIGNIFICANTLY increase total runtime.")
+            print("=" * 72 + "\n")
+            import importlib.util
+            spec = importlib.util.spec_from_file_location("get_embeddings", _ge_path)
+            ge_mod = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(ge_mod)
+            ge_mod.ensure_cache(cache_path=EMB_CACHE_PATH)
+        else:
+            raise FileNotFoundError(
+                f"Embedding cache not found at {EMB_CACHE_PATH}. "
+                "Run the precomputation step first: python get_embeddings.py"
+            )
 
     # ------------------- DERIVE WEIGHTS FROM THE JD RUBRIC --------------------
     # weight ∝ decisiveness × discriminativeness  (see markdown above)

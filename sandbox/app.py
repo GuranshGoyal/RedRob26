@@ -32,10 +32,17 @@ if uploaded_file is not None:
     st.write(f"Input: `{uploaded_file.name}` ({len(uploaded_file.getvalue()) / 1024:.1f} KB)")
 
     if st.button("Run ranking pipeline"):
-        with st.spinner("Running pipeline... (ranking step target ≤ 5 min)"):
-            t0 = time.time()
-            run_pipeline(input_path, out_path)
-            elapsed = time.time() - t0
+        # rank.py uses relative paths for JD files, so run it from the pipeline/ directory.
+        pipeline_dir = Path(__file__).resolve().parent.parent / "pipeline"
+        original_cwd = os.getcwd()
+        os.chdir(pipeline_dir)
+        try:
+            with st.spinner("Running pipeline... (ranking step target ≤ 5 min)"):
+                t0 = time.time()
+                run_pipeline(input_path, out_path)
+                elapsed = time.time() - t0
+        finally:
+            os.chdir(original_cwd)
 
         st.success(f"Pipeline finished in {elapsed:.1f}s")
 
