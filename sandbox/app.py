@@ -1,10 +1,13 @@
 import os
+import sys
 import tempfile
 import time
 from pathlib import Path
 
 import streamlit as st
 
+# Sandbox entry point is locked here; import the single source of truth from pipeline/
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "pipeline"))
 from rank import run_pipeline
 
 st.set_page_config(page_title="Redrob Candidate Ranker", page_icon="🎯")
