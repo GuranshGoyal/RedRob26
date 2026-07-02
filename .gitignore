@@ -1,6 +1,6 @@
 # Large / local data
-cache/
-data/
+pipeline/cache/
+pipeline/data/
 *.npz
 
 # # Generated outputs
