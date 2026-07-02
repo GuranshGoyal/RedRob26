@@ -305,20 +305,35 @@ This folder (`pipeline/`) is self-contained and contains everything needed to ru
 ## Setup
 
 ```bash
-# 1. Create a virtual environment (recommended)
-python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
+# 1. Clone the repository
+git clone https://github.com/GuranshGoyal/RedRob26.git
+cd RedRob26
 
-# 2. Install dependencies
+# 2. Install Git LFS and pull the .npz embedding cache
+#    (Git LFS is required because the embedding cache exceeds GitHub's 100 MB limit.)
+git lfs install
+git lfs pull
+
+# 3. Create a virtual environment (recommended)
+python -m venv venv
+
+# Activate (Windows Git Bash / PowerShell)
+source venv/Scripts/activate
+
+# Activate (Linux/macOS)
+source venv/bin/activate
+
+# 4. Install dependencies
 pip install -r requirements.txt
 
-# 3. Run the precomputation step (outside the 5-minute ranking budget)
-#    This downloads or generates the full-pool BGE embedding cache:
+# 5. Ensure the full-pool BGE embedding cache is present
+#    The cache is stored in Git LFS. If it is missing, get_embeddings.py can
+#    download it from HuggingFace (~1–2 minutes) or generate it locally (~300 minutes).
+cd pipeline
 python get_embeddings.py
 ```
 
- 
-`get_embeddings.py` first tries to download the pre-computed embedding cache from the project's HuggingFace dataset (uploaded during development, ~1–2 minutes). If the download is not allowed or fails, it falls back to generating the cache locally from `data/candidates.jsonl` (~300 minutes on the reference machine).
+`get_embeddings.py` first checks for the pre-computed embedding cache. If it is missing, it tries to download from the project's HuggingFace dataset (uploaded during development, ~1–2 minutes). If that fails, it falls back to generating the cache locally from `data/candidates.jsonl` (~300 minutes on the reference machine).
  
 
 ## Reproduce the submission
@@ -327,7 +342,8 @@ Precomputation must be completed **before** the ranking step. The ranking step m
 
 ```bash
 # Single-step command to run the ranking pipeline
-"python pipeline/rank.py --candidates ./pipeline/data/candidates.jsonl --out ./pipeline/output/submission.csv"
+cd pipeline
+python rank.py --candidates ./data/candidates.jsonl --out ./output/submission.csv
 ```
 
 Expected ranking runtime: **~2 minutes** on a modern CPU (≤ 5 minutes on the competition sandbox).
@@ -335,7 +351,8 @@ Expected ranking runtime: **~2 minutes** on a modern CPU (≤ 5 minutes on the c
 ## Validate the output
 
 ```bash
-python pipeline/validator/validate_submission.py pipeline/output/submission.csv
+cd pipeline
+python validator/validate_submission.py output/submission.csv
 ```
 
 ## Compute constraints

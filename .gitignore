@@ -1,7 +1,5 @@
 # Large / local data
-pipeline/cache/
 pipeline/data/
-*.npz
 
 deprecated/
 

@@ -27,7 +27,8 @@ sandbox_link: "https://resumegs.streamlit.app/"
 
 reproduce_command: "python pipeline/rank.py --candidates ./pipeline/data/candidates.jsonl --out ./pipeline/output/submission.csv"
 # Single command that produces submission.csv from candidates.jsonl.
-# If the pre-computed cache is not present, rank.py auto-obtains it:
+# The embedding cache is stored in Git LFS. Run `git lfs pull` after cloning to obtain it.
+# If the cache is missing, rank.py auto-obtains it:
 #   1. Downloads from the project's HuggingFace dataset (~1-2 minutes, preferred).
 #   2. Falls back to generating locally from data/candidates.jsonl (~300 minutes).
 # Ranking step runs end-to-end within 5 minutes on CPU with 16GB RAM and no network.
