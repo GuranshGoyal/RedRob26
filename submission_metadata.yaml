@@ -1,0 +1,88 @@
+# Redrob Hackathon — Submission Metadata
+# Fields here must match the portal metadata you submit at upload time.
+
+# ============================================================================
+# Team identity (fill in the TODOs below)
+# ============================================================================
+team_name: "TwoSum"  # Used in leaderboard and announcements
+
+primary_contact:
+  name: "Guransh Goyal"
+  email: "guransh31goyal@gmail.com"   # Used for all organizer communication
+  phone: "9804590002"      # Used for top-50 / top-10 outreach
+
+team_members:
+  - name: "Guransh Goyal"
+    email: "guransh31goyal@gmail.com"
+    role: "Ranking Pipeline Developer"
+
+  - name: "Samudraneel Sarkar"
+    email: "samudraneel05@gmail.com"
+    role: "Reproducibility & Sandbox Developer"
+
+# ============================================================================
+# Code and reproducibility
+# ============================================================================
+github_repo: "https://github.com/GuranshGoyal/RedRob26"
+# Required. Private repos OK if you can grant organizer access at Stage 3.
+
+sandbox_link: "https://resumegs.streamlit.app/"
+# Required. Streamlit Cloud sandbox where ranker can be run on a small sample.
+# Update this line after deploying the Streamlit app.
+
+reproduce_command: "python rank.py --candidates ./data/candidates.jsonl --out ./output/submission.csv"
+# Single command that produces submission.csv from candidates.jsonl.
+# Runs end-to-end within 5 minutes on CPU with 16GB RAM and no network.
+
+# ============================================================================
+# Compute environment (update if you ran on different hardware)
+# ============================================================================
+compute:
+  platform: "local laptop: Asus Vivobook S15"
+  cpu_cores: 12
+  ram_gb: 16
+  python_version: "3.12.4"
+  os: "Windows 11"
+  uses_gpu_for_inference: false       # Must be false
+  has_network_during_ranking: false   # Must be false
+  pre_computation_required: true       # We pre-compute full-pool BGE embeddings offline
+  pre_computation_time_minutes: 360    # Approximate time to generate the full-pool BGE cache
+
+# ============================================================================
+# AI tools declaration
+# ============================================================================
+ai_tools_used:
+  - "Claude"
+  - "ChatGPT"
+  # Add any others you used (GitHub Copilot, ChatGPT, Cursor, Gemini, etc.)
+
+ai_usage_summary: |
+  Used Claude for architecture discussion, code review, and pipeline refactoring.
+  No candidate data was uploaded to any LLM; all reasoning is generated
+  deterministically from the candidate profile by the pipeline itself.
+
+# ============================================================================
+# Approach summary
+# ============================================================================
+methodology_summary: |
+  Multi-stage retrieval-and-ranking pipeline. Stage 1 applies cheap hard-elimination
+  filters (location, AI/ML evidence, job-hopping, consulting-only, non-tech career,
+  pure research). Stage 2 computes weighted sub-scores (JD alignment, experience,
+  behavioral, production, like-to-have, location) and runs BM25+TF-IDF lexical
+  retrieval over all survivors. Stage 2D picks an adaptive shortlist size via
+  elbow+percentile analysis, then loads the pre-computed full-pool BGE embeddings
+  and builds a FAISS IndexFlatIP for exact cosine dense retrieval; a cross-encoder
+  re-ranks the top head. Stage 3 detects honeypots via multi-signal suspicion
+  scoring and a hard-reject threshold. Stage 4 generates concise candidate-specific
+  reasonings. Total ranking time is ~2 minutes on CPU; no network calls during
+  ranking.
+
+# ============================================================================
+# Declarations
+# ============================================================================
+declarations:
+  read_submission_spec: true
+  code_is_original_work: true
+  no_collusion: true
+  honeypot_check_done: true         # Verified top-100 honeypot rate < 10%
+  reproduction_tested: true          # rank.py runs end-to-end

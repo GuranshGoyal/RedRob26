@@ -1,0 +1,135 @@
+Top Skills by Frequency:
+                               count
+HTML                           12246
+Databricks                     12244
+Redux                          12222
+Terraform                      12187
+Angular                        12173
+Salesforce CRM                 12157
+Figma                          12157
+Vue.js                         12142
+Sales                          12138
+Accounting                     12136
+Agile                          12135
+Kafka                          12114
+Excel                          12109
+BigQuery                       12108
+CI/CD                          12108
+Project Management             12106
+Airflow                        12105
+Flask                          12104
+AWS                            12104
+Scrum                          12083
+Illustrator                    12072
+Kubernetes                     12071
+ETL                            12068
+CSS                            12065
+Docker                         12062
+Next.js                        12058
+Apache Beam                    12054
+Go                             12049
+Java                           12049
+TypeScript                     12048
+JavaScript                     12047
+dbt                            12046
+REST APIs                      12040
+Spark                          12038
+Marketing                      12037
+Tally                          12030
+Snowflake                      12027
+GraphQL                        12027
+Webpack                        12026
+Six Sigma                      11991
+SEO                            11990
+SAP                            11989
+GCP                            11983
+PostgreSQL                     11983
+Rust                           11960
+Apache Flink                   11958
+gRPC                           11957
+Content Writing                11948
+SQL                            11935
+Hadoop                         11931
+Redis                          11928
+Tailwind                       11917
+Photoshop                      11917
+FastAPI                        11917
+Microservices                  11909
+PowerPoint                     11908
+Spring Boot                    11906
+Data Pipelines                 11905
+Django                         11899
+MongoDB                        11841
+Node.js                        11838
+Azure                          11828
+React                          11811
+Hugging Face Transformers       5163
+LangChain                       5162
+Information Retrieval           5135
+LLMs                            5094
+Recommendation Systems          5091
+Semantic Search                 5087
+Sentence Transformers           5081
+Embeddings                      5080
+Vector Search                   5065
+Pinecone                        5062
+Prompt Engineering              5062
+FAISS                           5052
+RAG                             4995
+Fine-tuning LLMs                4920
+YOLO                            4827
+GANs                            4815
+Feature Engineering             4809
+OpenCV                          4803
+ASR                             4788
+Image Classification            4761
+Computer Vision                 4755
+Speech Recognition              4744
+CNN                             4740
+Kubeflow                        4730
+MLOps                           4727
+BentoML                         4726
+Reinforcement Learning          4708
+Data Science                    4708
+Object Detection                4705
+Diffusion Models                4701
+MLflow                          4691
+Time Series                     4686
+Weights & Biases                4685
+Forecasting                     4676
+TTS                             4669
+Statistical Modeling            4634
+QLoRA                           1401
+pgvector                        1394
+Weaviate                        1389
+Milvus                          1384
+Learning to Rank                1383
+BM25                            1382
+TensorFlow                      1381
+Qdrant                          1379
+Python                          1378
+PyTorch                         1378
+PEFT                            1377
+LoRA                            1371
+NLP                             1358
+Machine Learning                1349
+Deep Learning                   1342
+Haystack                        1333
+Elasticsearch                   1311
+LlamaIndex                      1308
+scikit-learn                    1288
+OpenSearch                      1286
+Information Retrieval Systems      7
+Text Encoders                      5
+Search Backend                     5
+Model Adaptation                   4
+Search & Discovery                 4
+Ranking Systems                    4
+Vector Representations             4
+Content Matching                   4
+Workflow Orchestration             3
+Search Infrastructure              3
+Indexing Algorithms                3
+Open-source ML libraries           3
+Natural Language Processing        2
+Document Processing                1
