@@ -300,7 +300,6 @@ This folder (`pipeline/`) is self-contained and contains everything needed to ru
 - `jd/` — job description files (`job_description_crux.md`, `job_description.md`).
 - `validator/` — official submission validator (`validate_submission.py`).
 - `output/` — generated submission (`submission.csv`).
-- `../deprecated/` — old notebooks and files no longer in use.
 - `../organizer/` — challenge bundle provided by the organizers.
 
 ## Setup
