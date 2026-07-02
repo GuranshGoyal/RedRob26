@@ -1,1 +1,14 @@
+# Large / local data
+cache/
+data/
+*.npz
 
+# # Generated outputs
+# output/
+# *.csv
+
+# Python environments
+venv/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
