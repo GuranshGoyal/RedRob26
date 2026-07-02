@@ -1,21 +1,19 @@
 # Redrob Hackathon — Submission Metadata
-# Fields here must match the portal metadata you submit at upload time.
 
 # ============================================================================
-# Team identity (fill in the TODOs below)
+# Team identity
 # ============================================================================
-team_name: "TwoSum"  # Used in leaderboard and announcements
+team_name: "TwoSum" 
 
 primary_contact:
   name: "Guransh Goyal"
-  email: "guransh31goyal@gmail.com"   # Used for all organizer communication
-  phone: "9804590002"      # Used for top-50 / top-10 outreach
+  email: "guransh31goyal@gmail.com"  
+  phone: "9804590002"    
 
 team_members:
   - name: "Guransh Goyal"
     email: "guransh31goyal@gmail.com"
     role: "Ranking Pipeline Developer"
-
   - name: "Samudraneel Sarkar"
     email: "samudraneel05@gmail.com"
     role: "Reproducibility & Sandbox Developer"
@@ -24,18 +22,19 @@ team_members:
 # Code and reproducibility
 # ============================================================================
 github_repo: "https://github.com/GuranshGoyal/RedRob26"
-# Required. Private repos OK if you can grant organizer access at Stage 3.
 
 sandbox_link: "https://resumegs.streamlit.app/"
-# Required. Streamlit Cloud sandbox where ranker can be run on a small sample.
-# Update this line after deploying the Streamlit app.
 
-reproduce_command: "python rank.py --candidates ./data/candidates.jsonl --out ./output/submission.csv"
+reproduce_command: "python pipeline/rank.py --candidates ./pipeline/data/candidates.jsonl --out ./pipeline/output/submission.csv"
 # Single command that produces submission.csv from candidates.jsonl.
-# Runs end-to-end within 5 minutes on CPU with 16GB RAM and no network.
+# If the pre-computed cache is not present, rank.py auto-obtains it:
+#   1. Downloads from the project's HuggingFace dataset (~1-2 minutes, preferred).
+#   2. Falls back to generating locally from data/candidates.jsonl (~300 minutes).
+# Ranking step runs end-to-end within 5 minutes on CPU with 16GB RAM and no network.
+
 
 # ============================================================================
-# Compute environment (update if you ran on different hardware)
+# Compute environment
 # ============================================================================
 compute:
   platform: "local laptop: Asus Vivobook S15"
@@ -43,10 +42,10 @@ compute:
   ram_gb: 16
   python_version: "3.12.4"
   os: "Windows 11"
-  uses_gpu_for_inference: false       # Must be false
-  has_network_during_ranking: false   # Must be false
-  pre_computation_required: true       # We pre-compute full-pool BGE embeddings offline
-  pre_computation_time_minutes: 360    # Approximate time to generate the full-pool BGE cache
+  uses_gpu_for_inference: false     
+  has_network_during_ranking: false   
+  pre_computation_required: true      
+  pre_computation_time_minutes: 300  
 
 # ============================================================================
 # AI tools declaration
@@ -54,12 +53,12 @@ compute:
 ai_tools_used:
   - "Claude"
   - "ChatGPT"
-  # Add any others you used (GitHub Copilot, ChatGPT, Cursor, Gemini, etc.)
 
 ai_usage_summary: |
   Used Claude for architecture discussion, code review, and pipeline refactoring.
   No candidate data was uploaded to any LLM; all reasoning is generated
   deterministically from the candidate profile by the pipeline itself.
+  Used ChatGPT for debugging and resolving basic issues.
 
 # ============================================================================
 # Approach summary
@@ -84,5 +83,5 @@ declarations:
   read_submission_spec: true
   code_is_original_work: true
   no_collusion: true
-  honeypot_check_done: true         # Verified top-100 honeypot rate < 10%
-  reproduction_tested: true          # rank.py runs end-to-end
+  honeypot_check_done: true        
+  reproduction_tested: true         

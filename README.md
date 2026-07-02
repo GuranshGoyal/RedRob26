@@ -27,7 +27,7 @@ Precomputation must be completed **before** the ranking step. `get_embeddings.py
 2. If not, download it from HuggingFace.
 3. If download fails, generate the cache locally from `data/candidates.jsonl`.
 
-Generation is checkpointed every 5,000 candidates so progress is not lost. `rank.py` never downloads or generates embeddings; it fails fast with a clear error if the cache is missing.
+Generation is checkpointed every 5,000 candidates so progress is not lost. If [pipeline/rank.py](cci:7://file:///d:/Desktop/India_runs_data_and_ai_challenge/pipeline/rank.py:0:0-0:0) is run without a precomputed cache, it automatically obtains the cache by calling [pipeline/get_embeddings.py](cci:7://file:///d:/Desktop/India_runs_data_and_ai_challenge/pipeline/get_embeddings.py:0:0-0:0) (it first tries to download the pre-computed cache from the project's HuggingFace dataset, which was uploaded during development, then falls back to local generation) and prints a warning that total runtime will be significantly higher.
 
 **Embedding model:** `BAAI/bge-small-en-v1.5` (384-dim, 512-token, CPU-friendly).
 
@@ -41,7 +41,7 @@ This section documents exactly what the pipeline considers and how each factor i
 
 ### JD preprocessing before retrieval
 
-The job description is read from `jd/job_description_crux.md` (falling back to `jd/job_description.md` or `organizer/job_description.md`). The markdown is parsed into three bullet lists:
+The job description is read from `jd/job_description_crux.md` (falling back to `jd/job_description.md`). The markdown is parsed into three bullet lists:
 
 - **Must-have** (`Things you absolutely need`)
 - **Like-to-have** (`Things we'd like you to have`)
@@ -88,16 +88,9 @@ A candidate is rejected if **any** of the following rules fire:
 | **Entire-career non-tech** | No job passes the tech whitelist. |
 | **Pure research without production** | 100% research months and no production evidence. |
 
-**Keyword lexicons used:**
-- **Consulting firms:** tcs, tata consultancy, infosys, wipro, accenture, cognizant, capgemini, hcl, tech mahindra, mindtree, ltimindtree, mphasis, deloitte, pwc, kpmg, ernst & young, ey, igate, syntel, hexaware, birlasoft, persistent systems.
-- **Non-tech titles:** sales, marketing, human resources, hr manager, recruiter, recruitment, talent acquisition, finance, accountant, accounting, operations manager, customer success, customer support, legal, business development, account manager, project manager, product manager, content writer, designer, mechanical, civil engineer, supply chain.
-- **Tech whitelist:** data analyst, analytics engineer, data engineer, bi engineer, research engineer, solutions architect, software engineer, ml engineer, machine learning, ai engineer, data scientist, backend engineer, platform engineer, devops, developer.
-- **Relevant titles:** ml engineer, machine learning engineer, ai engineer, applied scientist, applied ai, data scientist, research engineer, nlp engineer, search engineer, relevance engineer, recommendation engineer, ranking engineer, mlops engineer, ml scientist, research scientist, deep learning, computer vision engineer, data engineer, analytics engineer, data analyst, bi engineer, solutions architect, software engineer, backend engineer, platform engineer.
-- **Research keywords (for the pure-research filter):** research, phd, publication, published, paper, papers, academic, thesis, novel, state-of-the-art, arxiv.
 
-**AI/ML skills used for evidence and matching:** information retrieval, information retrieval systems, semantic search, vector search, recommendation systems, ranking systems, learning to rank, bm25, faiss, pinecone, weaviate, milvus, qdrant, pgvector, elasticsearch, opensearch, haystack, search backend, search infrastructure, search & discovery, indexing algorithms, content matching, vector representations, text encoders, embeddings, sentence transformers, hugging face transformers, llms, llm, rag, langchain, llamaindex, prompt engineering, fine-tuning llms, lora, qlora, peft, nlp, natural language processing, model adaptation, machine learning, deep learning, pytorch, tensorflow, scikit-learn, data science, feature engineering, statistical modeling, reinforcement learning, time series, forecasting, model adaptation, mlops, mlflow, kubeflow, bentoml, weights & biases, open-source ml libraries.
 
-> The full set is also in `rank.py` (`AIML_SKILLS`). It is intentionally broad so that relevant AI/ML work is never eliminated, while the scoring weights differentiate the exact JD fit.
+> `AIML_SKILLS` is intentionally broad so that relevant AI/ML work is never eliminated, while the scoring weights differentiate the exact JD fit.
 
 ### Stage 2: Candidate scoring
 
@@ -325,16 +318,17 @@ pip install -r requirements.txt
 python get_embeddings.py
 ```
 
-## Reproduce the submission
+ 
+`get_embeddings.py` first tries to download the pre-computed embedding cache from the project's HuggingFace dataset (uploaded during development, ~1–2 minutes). If the download is not allowed or fails, it falls back to generating the cache locally from `data/candidates.jsonl` (~300 minutes on the reference machine).
+ 
 
+## Reproduce the submission
+ 
 Precomputation must be completed **before** the ranking step. The ranking step makes no network calls and finishes in ≤ 5 minutes.
 
 ```bash
-# 1. Precompute the full-pool BGE embedding cache (allowed outside the 5-minute budget)
-python get_embeddings.py
-
-# 2. Run the ranking pipeline
-python rank.py --candidates ./data/candidates.jsonl --out ./output/submission.csv
+# Single-step command to run the ranking pipeline
+"python pipeline/rank.py --candidates ./pipeline/data/candidates.jsonl --out ./pipeline/output/submission.csv"
 ```
 
 Expected ranking runtime: **~2 minutes** on a modern CPU (≤ 5 minutes on the competition sandbox).
@@ -342,7 +336,7 @@ Expected ranking runtime: **~2 minutes** on a modern CPU (≤ 5 minutes on the c
 ## Validate the output
 
 ```bash
-python validator/validate_submission.py output/submission.csv
+python pipeline/validator/validate_submission.py pipeline/output/submission.csv
 ```
 
 ## Compute constraints
@@ -356,13 +350,3 @@ python validator/validate_submission.py output/submission.csv
 ## Sandbox
 
 A Streamlit sandbox is available at: `https://resumegs.streamlit.app/`.
-
-
-## Pre-computed embeddings
-
-`cache/bge_embeddings_completed.npz` is too large for GitHub. Download or generate it once before running the full pipeline:
-
-```bash
-python get_embeddings.py
-python rank.py --candidates ./data/candidates.jsonl --out ./output/submission.csv
-```

@@ -3,6 +3,8 @@ pipeline/cache/
 pipeline/data/
 *.npz
 
+deprecated/
+
 # # Generated outputs
 # output/
 # *.csv
