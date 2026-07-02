@@ -6,8 +6,8 @@ pipeline/data/
 deprecated/
 
 # # Generated outputs
-# output/
-# *.csv
+output/
+*.csv
 
 # Python environments
 venv/
