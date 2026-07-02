@@ -10,6 +10,7 @@ import gzip
 import hashlib
 import json
 import os
+import ssl
 import tempfile
 import time
 import urllib.error
@@ -108,12 +109,13 @@ def _save_cache(cache: dict, path: str):
 
 def _download(url: str, cache_path: str, timeout: int = 300) -> bool:
     """Try to download the pre-computed cache. Return True on success."""
-    try:
+
+    def _try_download(ctx=None):
         os.makedirs(os.path.dirname(cache_path), exist_ok=True)
         tmp_path = cache_path + ".tmp"
         print(f"Downloading embeddings from {url} ...")
         req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
-        with urllib.request.urlopen(req, timeout=timeout) as response, open(tmp_path, "wb") as out_file:
+        with urllib.request.urlopen(req, timeout=timeout, context=ctx) as response, open(tmp_path, "wb") as out_file:
             while True:
                 chunk = response.read(8 * 1024 * 1024)
                 if not chunk:
@@ -122,7 +124,26 @@ def _download(url: str, cache_path: str, timeout: int = 300) -> bool:
         os.replace(tmp_path, cache_path)
         print(f"Saved to {cache_path}")
         return True
-    except (urllib.error.URLError, urllib.error.HTTPError, OSError, TimeoutError) as e:
+
+    try:
+        return _try_download()
+    except urllib.error.URLError as e:
+        # Retry with SSL verification disabled if the error is certificate-related.
+        if isinstance(e.reason, ssl.SSLCertVerificationError) or "CERTIFICATE_VERIFY_FAILED" in str(e):
+            print("SSL certificate verification failed. Retrying with verification disabled...")
+            try:
+                return _try_download(ctx=ssl._create_unverified_context())
+            except urllib.error.URLError as e2:
+                print(f"Download failed (unverified SSL): {e2}")
+        else:
+            print(f"Download failed: {e}")
+        if os.path.exists(cache_path + ".tmp"):
+            try:
+                os.remove(cache_path + ".tmp")
+            except OSError:
+                pass
+        return False
+    except (urllib.error.HTTPError, OSError, TimeoutError) as e:
         print(f"Download failed: {e}")
         if os.path.exists(cache_path + ".tmp"):
             try:
